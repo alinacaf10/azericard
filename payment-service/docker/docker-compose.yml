@@ -1,0 +1,12 @@
+version: '3.1'
+
+services:
+  postgres-payment-service-db:
+    container_name: postgres-payment-service-ac # ac means azericard
+    image: postgres:15.4
+    restart: always
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: payment_service
+      POSTGRES_PASSWORD: azericard
