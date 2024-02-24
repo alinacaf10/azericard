@@ -11,6 +11,7 @@
         <module name="user-service" />
         <module name="card-service" />
         <module name="payment-service" />
+        <module name="discovery-server" />
       </profile>
     </annotationProcessing>
   </component>
