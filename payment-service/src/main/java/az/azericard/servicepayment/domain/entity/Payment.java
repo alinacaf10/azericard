@@ -2,7 +2,9 @@ package az.azericard.servicepayment.domain.entity;
 
 import az.azericard.servicepayment.domain.enumeration.PaymentStatus;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,15 +14,21 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    private LocalDateTime timestamp;
+    private String productName;
 
-    private Integer productId;
+    private BigDecimal productPrice;
 
-    private Integer userId;
+    private String username;
 
-    private Integer cardId;
+    private String cardNumber;
+
+    private String message;
 
     private PaymentStatus paymentStatus;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime timestamp;
 
     public Payment() {
     }
@@ -41,35 +49,51 @@ public class Payment {
         this.timestamp = timestamp;
     }
 
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getCardId() {
-        return cardId;
-    }
-
-    public void setCardId(Integer cardId) {
-        this.cardId = cardId;
-    }
-
     public PaymentStatus getPaymentStatus() {
         return paymentStatus;
     }
 
     public void setPaymentStatus(PaymentStatus paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public BigDecimal getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(BigDecimal productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getCardNumber() {
+        return cardNumber;
+    }
+
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

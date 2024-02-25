@@ -1,12 +1,12 @@
 package az.azericard.servicepayment.controller;
 
-import az.azericard.servicepayment.domain.entity.Payment;
+import az.azericard.core.domain.OperationResponse;
+import az.azericard.servicepayment.domain.dto.PaymentDto;
+import az.azericard.servicepayment.domain.dto.PaymentResponse;
 import az.azericard.servicepayment.service.PaymentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,9 +19,15 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Payment>> getAllPayments() {
-        List<Payment> payments = paymentService.getAllPayments();
+    @GetMapping("/{username}")
+    public ResponseEntity<List<PaymentResponse>> getAllPayments(@PathVariable String username) {
+        List<PaymentResponse> payments = paymentService.getAllUserPayments(username);
         return new ResponseEntity<>(payments, HttpStatus.OK);
+    }
+
+    @PostMapping("/purchase")
+    public ResponseEntity<OperationResponse> createPayment(@RequestBody PaymentDto paymentDto) {
+        OperationResponse operationResponse = paymentService.createPayment(paymentDto);
+        return new ResponseEntity<>(operationResponse, HttpStatus.OK);
     }
 }
