@@ -14,10 +14,7 @@ public class CreateCardRequest implements Serializable {
     @NotBlank(message = "{field.notBlank}")
     private Issuer issuer;
 
-    @NotBlank(message = "{field.notBlank}")
     private String cardHolder;
-
-    @NotBlank(message = "{field.notBlank}")
     private PaymentProcessingNetwork paymentProcessingNetwork;
 
     public CreateCardRequest() {

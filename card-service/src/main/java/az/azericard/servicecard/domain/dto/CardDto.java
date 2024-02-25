@@ -1,54 +1,27 @@
-package az.azericard.servicecard.domain.entity;
+package az.azericard.servicecard.domain.dto;
 
 import az.azericard.servicecard.domain.enumeration.CardType;
 import az.azericard.servicecard.domain.enumeration.CardValidityStatus;
 import az.azericard.servicecard.domain.enumeration.Issuer;
 import az.azericard.servicecard.domain.enumeration.PaymentProcessingNetwork;
-import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "cards")
-public class Card {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Integer id;
-
-    @Column(unique = true)
+public class CardDto {
     private String cardNumber;
-
     private LocalDate expirationDate;
-
-    private char[] cvv;
-
+    private String cvv;
     private BigDecimal balance;
-
     private CardType cardType;
-
     private Issuer issuer;
-
     private CardValidityStatus cardValidityStatus;
-
     private String cardHolder;
-
     private PaymentProcessingNetwork paymentProcessingNetwork;
-
     private LocalDateTime createdAt;
 
-    public Card() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public CardDto() {}
 
     public String getCardNumber() {
         return cardNumber;
@@ -66,12 +39,12 @@ public class Card {
         this.expirationDate = expirationDate;
     }
 
-    public char[] getCvv() {
+    public String getCvv() {
         return cvv;
     }
 
     public void setCvv(String cvv) {
-        this.cvv = cvv.toCharArray();
+        this.cvv = cvv;
     }
 
     public BigDecimal getBalance() {

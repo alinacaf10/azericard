@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 
 @SpringBootApplication
 public class ProductServiceApplication implements ApplicationRunner {
@@ -28,29 +29,35 @@ public class ProductServiceApplication implements ApplicationRunner {
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
-        var lenovo = new Product();
-        lenovo.setName("Lenovo");
-        lenovo.setCategory(ProductCategory.LAPTOP);
-        lenovo.setQuantityInStock(23);
-        lenovo.setPrice(new BigDecimal("2500"));
+        Optional<Product> productByName = repository.findByName("Lenovo");
+        if (productByName.isEmpty()) {
+            var lenovo = new Product();
+            lenovo.setName("Lenovo");
+            lenovo.setCategory(ProductCategory.LAPTOP);
+            lenovo.setQuantityInStock(23);
+            lenovo.setPrice(new BigDecimal("2500"));
 
-        Map<ProductAttributes, String> lenovoAttributes = Map.of(
-                ProductAttributes.RAM, "16",
-                ProductAttributes.SSD, "256");
+            Map<ProductAttributes, String> lenovoAttributes = Map.of(
+                    ProductAttributes.RAM, "16",
+                    ProductAttributes.SSD, "256");
 
-        lenovo.setProductAttributes(lenovoAttributes);
+            lenovo.setProductAttributes(lenovoAttributes);
 
-        repository.save(lenovo);
+            repository.save(lenovo);
+        }
 
-        var iphone = new Product();
-        iphone.setName("Iphone 15");
-        iphone.setCategory(ProductCategory.SMARTPHONE);
-        iphone.setQuantityInStock(5);
-        iphone.setPrice(new BigDecimal("3000"));
+        productByName = repository.findByName("Iphone 15");
+        if (productByName.isEmpty()) {
+            var iphone = new Product();
+            iphone.setName("Iphone 15");
+            iphone.setCategory(ProductCategory.SMARTPHONE);
+            iphone.setQuantityInStock(5);
+            iphone.setPrice(new BigDecimal("3000"));
 
-        Map<ProductAttributes, String> iphoneAttributes = Map.of(ProductAttributes.RAM, "6");
-        iphone.setProductAttributes(iphoneAttributes);
+            Map<ProductAttributes, String> iphoneAttributes = Map.of(ProductAttributes.RAM, "6");
+            iphone.setProductAttributes(iphoneAttributes);
 
-        repository.save(iphone);
+            repository.save(iphone);
+        }
     }
 }
