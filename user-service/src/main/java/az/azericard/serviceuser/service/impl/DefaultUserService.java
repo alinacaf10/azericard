@@ -6,11 +6,14 @@ import az.azericard.serviceuser.domain.dto.*;
 import az.azericard.serviceuser.domain.entity.User;
 import az.azericard.serviceuser.repository.UserRepository;
 import az.azericard.serviceuser.service.UserService;
+import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,11 +22,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 @Service
-public class DefaultUserService implements UserService {
+public class DefaultUserService implements UserService, UserDetailsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultUserService.class);
 
@@ -39,6 +43,23 @@ public class DefaultUserService implements UserService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.webClientBuilder = webClientBuilder;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+        if (Strings.isNullOrEmpty(username)) {
+            throw new IllegalArgumentException("username can not be null or empty!");
+        }
+
+        return userRepository.findUserByUsername(username)
+                .map(this::createSecurityUser)
+                .orElseThrow(() -> new UsernameNotFoundException("User " + username + " was not found!"));
+    }
+
+    private UserDetails createSecurityUser(final User user) {
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(), user.getPassword(), Collections.emptyList());
     }
 
     @Override

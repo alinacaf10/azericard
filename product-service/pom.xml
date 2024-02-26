@@ -6,16 +6,19 @@
         <groupId>az.azericard</groupId>
         <artifactId>azericard</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath/>
     </parent>
-    <groupId>az.azericard</groupId>
+
     <artifactId>product-service</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
     <name>product-service</name>
     <description>Product Service</description>
+
     <properties>
         <java.version>17</java.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
