@@ -1,15 +1,13 @@
 package az.azericard.serviceproduct.domain.dto;
+
 import az.azericard.serviceproduct.domain.entity.Product;
 import az.azericard.serviceproduct.domain.enumeration.ProductAttributes;
 import az.azericard.serviceproduct.domain.enumeration.ProductCategory;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.Objects;
-
-import jakarta.validation.constraints.NotBlank;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ProductDto {
@@ -26,12 +24,6 @@ public class ProductDto {
     @NotBlank(message = "{field.notBlank}")
     private BigDecimal price;
 
-//    @ElementCollection(fetch = FetchType.LAZY)
-//    @CollectionTable(name = "product_attributes")
-//    @MapKeyColumn(name = "attribute_key")
-//    @MapKeyEnumerated(EnumType.STRING)
-//    @MapKeyClass(ProductAttributes.class)
-//    @Column(name = "attribute_value")
     @NotBlank(message = "{field.notBlank}")
     private Map<ProductAttributes, String> productAttributes;
 
@@ -84,18 +76,5 @@ public class ProductDto {
 
     public void setProductAttributes(Map<ProductAttributes, String> productAttributes) {
         this.productAttributes = productAttributes;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProductDto that = (ProductDto) o;
-        return quantityInStock == that.quantityInStock && Objects.equals(name, that.name) && category == that.category && Objects.equals(price, that.price) && Objects.equals(productAttributes, that.productAttributes);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, category, quantityInStock, price, productAttributes);
     }
 }

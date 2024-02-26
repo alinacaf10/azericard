@@ -1,17 +1,19 @@
 package az.azericard.serviceproduct.service.impl;
 
+import az.azericard.core.domain.OperationResponse;
+import az.azericard.serviceproduct.domain.dto.ProductDto;
 import az.azericard.serviceproduct.domain.entity.Product;
-import az.azericard.serviceproduct.domain.enumeration.ProductCategory;
 import az.azericard.serviceproduct.repository.ProductRepository;
 import az.azericard.serviceproduct.service.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class DefaultProductService implements ProductService {
-
     private final ProductRepository productRepository;
 
     public DefaultProductService(ProductRepository productRepository) {
@@ -19,48 +21,41 @@ public class DefaultProductService implements ProductService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Product> getAllProduct() {
         return productRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public ProductDto getProductByName(String productName) {
+        return productRepository.findByName(productName)
+                .map((product) -> {
+                    var productDto = new ProductDto();
+                    productDto.setName(product.getName());
+                    productDto.setCategory(product.getCategory());
+                    productDto.setPrice(product.getPrice());
+                    productDto.setQuantityInStock(product.getQuantityInStock());
+                    return productDto;
+                })
+                .orElse(null);
+    }
+
+    @Override
     @Transactional
-    public Product getProductByName(String name) {
-        if (productRepository.getProductByName(name).isEmpty()) {
-            throw new IllegalArgumentException("Product '" + name + "' not found!");
+    public OperationResponse decrementStock(String productName) {
+        Objects.requireNonNull(productName, "productName can't be null");
+
+        Optional<Product> optionalProduct = productRepository.findByName(productName);
+        if (optionalProduct.isEmpty()) {
+            return new OperationResponse(false, "Product doesn't exist!");
         }
-        return productRepository.getProductByName(name).get();
+
+        Product product = optionalProduct.get();
+        product.setQuantityInStock(product.getQuantityInStock() - 1);
+        productRepository.save(product);
+
+        return new OperationResponse(true, "Stock count is decremented for " + productName);
     }
 
-    @Override
-    public List<Product> getProductsByCategory(ProductCategory category) {
-//        if (productRepository.getProductsByCategory(category).isEmpty()) {
-//            throw new IllegalArgumentException("Category not found!");
-//        }
-//        I'm not sure this state is true
-        return productRepository.getProductsByCategory(category);
-    }
-
-    @Override
-    @Transactional
-    public Product addProduct(Product product) {
-        return productRepository.save(product);
-    }
-
-    @Override
-    @Transactional
-    public Product updateProduct(int id, Product product) {
-        return null;
-    }
-
-    @Override
-    @Transactional
-    public void deleteProduct(int id) {
-        if (productRepository.findById(id).isPresent()) {
-            productRepository.deleteById(id);
-        } else {
-            productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product with id:" + id + " not found!"));
-        }
-    }
 }

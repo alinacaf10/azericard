@@ -1,7 +1,8 @@
 package az.azericard.serviceproduct.controller;
 
+import az.azericard.core.domain.OperationResponse;
+import az.azericard.serviceproduct.domain.dto.ProductDto;
 import az.azericard.serviceproduct.domain.entity.Product;
-import az.azericard.serviceproduct.domain.enumeration.ProductCategory;
 import az.azericard.serviceproduct.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,42 +19,21 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping()
-    public ResponseEntity<List<Product>> getAllUsers() {
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productService.getAllProduct();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("/name/{productName}")
-    public ResponseEntity<Product> getProductByName(@PathVariable String productName) {
-        Product product = productService.getProductByName(productName);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity<ProductDto> getProduct(@RequestParam("product") String product) {
+        ProductDto productDto = productService.getProductByName(product);
+        return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 
-    @GetMapping("/{category}")
-    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable ProductCategory category) {
-        List<Product> products = productService.getProductsByCategory(category);
-        return new ResponseEntity<>(products, HttpStatus.OK);
+    @PutMapping("/{product}/decrement-stock")
+    public ResponseEntity<OperationResponse> decrementStockFor(@PathVariable("product") String product) {
+        OperationResponse operationResponse = productService.decrementStock(product);
+        return new ResponseEntity<>(operationResponse, HttpStatus.OK);
     }
-
-    @PostMapping()
-    public ResponseEntity<Product> addProduct(@RequestBody Product product) {
-        Product createdProduct = productService.addProduct(product);
-        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(
-            @PathVariable int id,
-            @RequestBody Product product) {
-        Product updatedProduct = productService.updateProduct(id, product);
-        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable int id) {
-        productService.deleteProduct(id);
-        return new ResponseEntity<>("Product with id:" + id + " successfully deleted", HttpStatus.OK);
-    }
-
 }
